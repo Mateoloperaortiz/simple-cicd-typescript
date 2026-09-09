@@ -1,25 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sum Two Numbers :) </title>
+  <title>Calculadora</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 64px 20px; background: #f5f6fa; color: #202437; font: 16px/1.5 system-ui, sans-serif; }
+    main { max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e0e3ec; border-radius: 16px; background: #fff; }
+    h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: -1px; }
+    .intro { margin: 0 0 28px; color: #586174; }
+    .numbers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; margin-bottom: 20px; font-weight: 600; }
+    input, select, button { width: 100%; font: inherit; border-radius: 8px; }
+    input, select { min-width: 0; margin-top: 8px; padding: 11px 12px; color: #202437; background: white; border: 1px solid #aab2c2; }
+    button { padding: 12px; background: #3747a5; color: white; border: 0; font-weight: 600; cursor: pointer; }
+    button:hover { background: #293882; }
+    :focus-visible { outline: 3px solid #8d9df0; outline-offset: 3px; }
+    #result { min-height: 56px; margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #e0e3ec; font-size: 22px; font-weight: 600; overflow-wrap: anywhere; }
+    #result.error { color: #a4262c; font-size: 17px; }
+    @media (max-width: 380px) { body { padding: 24px 12px; } main { padding: 24px; } .numbers { grid-template-columns: 1fr; gap: 0; } }
+  </style>
 </head>
 <body>
-  <h1>Sum Two Int Numbers =) </h1>
-  <input type="number" id="num1" placeholder="First number" />
-  <span> + </span>
-  <input type="number" id="num2" placeholder="Second number" />
-  <button type="button" id="btnSum">Sum</button>
-  <p>Result: <strong id="result">—</strong></p>
-
-  <!-- Link to the compiled JS (compile sum.ts with: tsc sum.ts) -->
+  <main>
+    <h1>Calculadora</h1>
+    <p class="intro">Elige una operación e ingresa dos números.</p>
+    <form id="calculator" novalidate>
+      <label for="operation">Operación
+        <select id="operation">
+          <option value="sum">Suma (+)</option>
+          <option value="subtract">Resta (−)</option>
+          <option value="multiply">Multiplicación (×)</option>
+          <option value="divide">División (÷)</option>
+        </select>
+      </label>
+      <div class="numbers">
+        <label for="num1">Primer número
+          <input type="number" id="num1" step="any" required placeholder="Ej. 12">
+        </label>
+        <label for="num2">Segundo número
+          <input type="number" id="num2" step="any" required placeholder="Ej. 3">
+        </label>
+      </div>
+      <button type="submit">Calcular</button>
+    </form>
+    <p id="result" role="status" aria-live="polite">Resultado: —</p>
+  </main>
   <script src="sum.js"></script>
   <script>
-    document.getElementById('btnSum').addEventListener('click', function () {
-      var a = Number(document.getElementById('num1').value) || 0;
-      var b = Number(document.getElementById('num2').value) || 0;
-      document.getElementById('result').textContent = sum(a, b);
+    const operations = { sum, subtract, multiply, divide };
+    document.getElementById('calculator').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const first = document.getElementById('num1').value.trim();
+      const second = document.getElementById('num2').value.trim();
+      const result = document.getElementById('result');
+      result.classList.remove('error');
+      try {
+        if (first === '' || second === '') {
+          throw new Error('Ingresa ambos números.');
+        }
+        const a = Number(first);
+        const b = Number(second);
+        if (!Number.isFinite(a) || !Number.isFinite(b)) {
+          throw new Error('Ingresa números válidos.');
+        }
+        const operation = document.getElementById('operation').value;
+        const value = operations[operation](a, b);
+        if (!Number.isFinite(value)) {
+          throw new Error('El resultado está fuera del rango permitido.');
+        }
+        result.textContent = 'Resultado: ' + value;
+      } catch (error) {
+        result.textContent = error.message;
+        result.classList.add('error');
+      }
     });
   </script>
 </body>

@@ -1,31 +1,74 @@
-/**
- * Unit tests for sum()
- * Loads the compiled sum.js so window.sum is available (same as in the browser).
- */
+/** Tests the compiled script, as loaded by the published calculator. */
 declare global {
   interface Window {
     sum: (a: number, b: number) => number;
+    subtract: (a: number, b: number) => number;
+    multiply: (a: number, b: number) => number;
+    divide: (a: number, b: number) => number;
   }
 }
 
 beforeAll(() => {
-  // Load the built script that attaches sum to window (non-module)
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("./sum.js");
 });
 
-describe("sum", () => {
-  it("adds two positive numbers", () => {
-    expect(window.sum(2, 3)).toBe(5);
+describe("sum (suma)", () => {
+  it.each([
+    [2, 3, 5],
+    [0, 0, 0],
+    [0, 5, 5],
+    [-2, 3, 1],
+    [-2, -3, -5],
+  ])("sum(%s, %s) = %s", (a, b, expected) => {
+    expect(window.sum(a, b)).toBe(expected);
+  });
+});
+
+describe("subtract (resta)", () => {
+  it.each([
+    [5, 3, 2],
+    [0, 0, 0],
+    [5, 0, 5],
+    [0, 5, -5],
+    [-2, 3, -5],
+    [-2, -3, 1],
+  ])("subtract(%s, %s) = %s", (a, b, expected) => {
+    expect(window.subtract(a, b)).toBe(expected);
+  });
+});
+
+describe("multiply (multiplicacion)", () => {
+  it.each([
+    [2, 3, 6],
+    [5, 0, 0],
+    [0, 0, 0],
+    [-2, 3, -6],
+    [-2, -3, 6],
+  ])("multiply(%s, %s) = %s", (a, b, expected) => {
+    expect(window.multiply(a, b)).toBe(expected);
+  });
+});
+
+describe("divide (division)", () => {
+  it.each([
+    [6, 3, 2],
+    [0, 3, 0],
+    [-6, 3, -2],
+    [-6, -3, 2],
+    [7, 2, 3.5],
+  ])("divide(%s, %s) = %s", (a, b, expected) => {
+    expect(window.divide(a, b)).toBe(expected);
   });
 
-  it("adds negative numbers and positive numbers", () => {
-    expect(window.sum(-1, 1)).toBe(0);
-  });
-
-  it("returns 0 when both are 0", () => {
-    expect(window.sum(0, 0)).toBe(0);
-  });
+  it.each([[5, 0], [0, 0], [5, -0]])(
+    "divide(%s, %s) lanza error por division por cero",
+    (a, b) => {
+      expect(() => window.divide(a, b)).toThrow(
+        "No se puede dividir por cero",
+      );
+    },
+  );
 });
 
 export {};

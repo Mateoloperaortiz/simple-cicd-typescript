@@ -1,57 +1,33 @@
-# 🧮 simple-cicd-typescript
+# Calculadora con TypeScript y GitHub Actions
 
-## Taller 1 de Pruebas de Software
+Taller 1 de Pruebas de Software, partes 1 y 2. Fork del [proyecto base de paolavallejo](https://github.com/paolavallejo/simple-cicd-typescript).
 
-Desarrollo de las partes 1 y 2: verificar el pipeline de GitHub Actions y el despliegue inicial en GitHub Pages, y ampliar la calculadora con operaciones y pruebas unitarias.
+**Sitio publicado:** https://mateoloperaortiz.github.io/simple-cicd-typescript/
 
-Sitio del taller: https://mateoloperaortiz.github.io/simple-cicd-typescript/
+## Parte 1
 
-Este proyecto es una introducción práctica al desarrollo con **TypeScript**, pruebas automatizadas con **Jest**, análisis estático usando **ESLint**, y un flujo de **CI/CD** configurado con **GitHub Actions**.
+Se habilitaron Actions y GitHub Pages con Source = GitHub Actions. Un cambio en este README activó el pipeline original y permitió comprobar la suma en el sitio publicado.
 
-El objetivo final es construir una **calculadora de números enteros**.  
-Actualmente el repositorio solo implementa la operación de **suma**, que sirve como base para practicar correcciones, pruebas y validación del pipeline.
+- Commit inicial verificado: `2db2e9a`.
+- [Workflow original aprobado](https://github.com/Mateoloperaortiz/simple-cicd-typescript/actions/runs/34376185574).
 
----
+## Parte 2
 
-## 📌 Descripción del proyecto
+La calculadora permite sumar, restar, multiplicar y dividir números positivos, negativos, cero y decimales. Los campos vacíos muestran un mensaje de validación. Dividir por cero lanza `Error("No se puede dividir por cero")`, que la interfaz muestra sin conservar el resultado anterior.
 
-Este repositorio contiene la estructura inicial de una calculadora escrita en TypeScript.  
-La única operación implementada por ahora es:
+Las cuatro funciones están en `sum.ts` y se exponen en `window`. Las pruebas de `sum.test.ts` cargan el mismo `sum.js` compilado que usa el navegador. El despliegue sigue copiando únicamente `index.html` y `sum.js` a `site/`.
 
-- `sum(a, b)` → retorna la suma de dos enteros.
+## Ejecutar las comprobaciones
 
-El proyecto incluye configuraciones listas para ejecutar:
+```sh
+npm ci
+npm run lint
+npm test -- --verbose
+npm run build
+```
 
-- **ESLint** (pruebas estáticas)
-- **Jest** (pruebas unitarias)
-- **GitHub Actions** (pipeline de CI/CD)
-- **Despliegue** mediante GitHub Pages
+Después de compilar, abrir `index.html` en el navegador. No se deben versionar los archivos JavaScript generados, que están excluidos mediante `.gitignore`.
 
----
+## Pipeline
 
-## 🎥 **Ver video de demostración:**  
-[Haz clic aquí para abrir el video](https://eafit-my.sharepoint.com/personal/pvallej3_eafit_edu_co/_layouts/15/embed.aspx?UniqueId=c83df551-bb2d-4d3e-a90f-4f5b1b86d094)
-
----
-
-## 📂 Estructura del proyecto
-
-```text
-.github/               # Contiene los workflows de GitHub Actions (CI/CD)
-└── workflows/
-    └── cicd.yml        # Pipeline que ejecuta lint, tests y deploy
-
-.eslintrc.cjs          # Configuración de ESLint para TypeScript
-.gitignore             # Archivos ignorados por Git
-
-index.html             # Archivo de ejemplo para despliegue (GitHub Pages)
-
-jest.config.cjs        # Configuración de Jest (framework de pruebas)
-
-package.json           # Scripts y dependencias del proyecto
-package-lock.json      # Bloqueo de versiones de dependencias
-
-sum.ts                 # Implementación de la operación de suma (TypeScript)
-sum.test.ts            # Prueba unitaria para la operación de suma
-
-tsconfig.json          # Configuración del compilador de TypeScript 
+Cada push a `main` ejecuta instalación, lint, pruebas, compilación y despliegue a Pages. En los pull requests se ejecuta CI sin publicar el sitio. El paso Test muestra cada caso y su operación mediante la salida detallada de Jest.
