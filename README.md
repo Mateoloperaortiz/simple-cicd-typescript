@@ -4,6 +4,8 @@
 
 Desarrollo de las partes 1 y 2: verificar el pipeline de GitHub Actions y el despliegue inicial en GitHub Pages, y ampliar la calculadora con operaciones y pruebas unitarias.
 
+Sitio del taller: https://mateoloperaortiz.github.io/simple-cicd-typescript/
+
 Este proyecto es una introducción práctica al desarrollo con **TypeScript**, pruebas automatizadas con **Jest**, análisis estático usando **ESLint**, y un flujo de **CI/CD** configurado con **GitHub Actions**.
 
 El objetivo final es construir una **calculadora de números enteros**.  
